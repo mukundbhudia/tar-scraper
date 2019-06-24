@@ -5,12 +5,15 @@ const reviewParse = require('./reviewScraper');
 
 const url = 'https://www.tripadvisor.com.sg/Attraction_Review-g293891-d16813813-Reviews-Ankit_Treks-Pokhara_Gandaki_Zone_Western_Region.html';
 
+let numberOfReviewsFound = 0;
+
 rp(url)
   .then(function(html){
     const reviewPages = $('a.pageNum', html);
-    const reviewContainer = $('div.reviewSelector', html);
+    const reviewCount = $('div.pagination-details > b:last-child', html);
     const reviewPageUrls = [];
-    const reviewsDiv = [];
+
+    numberOfReviewsFound = reviewCount[0].children[0].data.match(/\d+/)[0]
 
     const oKeys = Object.keys(reviewPages)
     const rightKeys = oKeys.filter((number) => {
@@ -22,7 +25,8 @@ rp(url)
         reviewPageUrls.push(element.attribs.href);
         // console.log(reviewParse('https://www.tripadvisor.com.sg' + element.attribs.href))
     }
-    console.log(reviewPageUrls);
+
+    console.log('Found ' + reviewPageUrls.length + ' review pages');
 
     return Promise.all(
         reviewPageUrls.map(function(url) {
@@ -30,18 +34,20 @@ rp(url)
         })
       );
     })
-    .then(function(reviews) {  
-        console.log(reviews)
-        var jsonObj = JSON.parse(reviews);
-        console.log(jsonObj);
+    .then(function(reviews) {
+        let merged = [].concat.apply([], reviews);
+        // console.log(merged)
+        console.log('There are ' + numberOfReviewsFound + ' reviews and ' + merged.length + ' have been scraped')
+
+        var jsonContent = JSON.stringify(merged);
+        // console.log(jsonContent);
+
+        // var jsonObj = JSON.parse(jsonContent);
+        // console.log(jsonObj);
         
-        // stringify JSON Object
-        var jsonContent = JSON.stringify(jsonObj);
-        console.log(jsonContent);
-        
-        fs.writeFile("output.json", jsonContent, 'utf8', function (err) {
+        fs.writeFile("out/output.json", jsonContent, 'utf8', function (err) {
             if (err) {
-                console.log("An error occured while writing JSON Object to File.");
+                console.log("An error occurred while writing JSON Object to File.");
                 return console.log(err);
             }
         
@@ -50,4 +56,5 @@ rp(url)
     })
   .catch(function(err){
     console.error(err);
-});
+  }
+);
