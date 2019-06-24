@@ -1,7 +1,7 @@
 {
-  "name": "tar-scrapper",
+  "name": "tar-scraper",
   "version": "1.0.0",
-  "description": "TripAdvisor reviews scrapper",
+  "description": "TripAdvisor reviews scraper. Supply a TripAdvisor page and retrieve reviews for the page (company, attraction, tour)",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
