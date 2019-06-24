@@ -1,7 +1,7 @@
 const rp = require('request-promise');
 const $ = require('cheerio');
 const fs = require('fs');
-const reviewParse = require('./reviewScrapper');
+const reviewParse = require('./reviewScraper');
 
 const url = 'https://www.tripadvisor.com.sg/Attraction_Review-g293891-d16813813-Reviews-Ankit_Treks-Pokhara_Gandaki_Zone_Western_Region.html';
 
