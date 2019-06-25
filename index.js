@@ -4,7 +4,7 @@ const fs = require('fs');
 const reviewParse = require('./reviewScraper');
 
 const url = 'https://www.tripadvisor.com.sg/Attraction_Review-g293891-d16813813-Reviews-Ankit_Treks-Pokhara_Gandaki_Zone_Western_Region.html';
-
+// const url = 'https://www.tripadvisor.com.sg/Restaurant_Review-g293891-d8508841-Reviews-Rosemary_Kitchen-Pokhara_Gandaki_Zone_Western_Region.html'
 let numberOfReviewsFound = 0;
 
 rp(url)
@@ -14,36 +14,27 @@ rp(url)
     const reviewPageUrls = [];
 
     numberOfReviewsFound = reviewCount[0].children[0].data.match(/\d+/)[0]
+    const numberOfReviewPages = Math.ceil(numberOfReviewsFound/10)
 
-    const oKeys = Object.keys(reviewPages)
-    const rightKeys = oKeys.filter((number) => {
-        return Number.isInteger(parseInt(number)); 
-    })
-
-    for (let i = 0; i < rightKeys.length; i++) {
-        const element = reviewPages[i];
-        reviewPageUrls.push(element.attribs.href);
-        // console.log(reviewParse('https://www.tripadvisor.com.sg' + element.attribs.href))
+    reviewPageUrls.push(url);
+    for (let i = 1; i < numberOfReviewPages; i++) {
+        let reviewUrl = url.replace("-Reviews-", "-Reviews-or" + i + "0-");
+        reviewPageUrls.push(reviewUrl);
     }
 
-    console.log('Found ' + reviewPageUrls.length + ' review pages');
+    console.log('Found ' + reviewPageUrls.length + ' review pages with ' + numberOfReviewsFound + ' reviews');
 
     return Promise.all(
         reviewPageUrls.map(function(url) {
-          return reviewParse('https://www.tripadvisor.com.sg' + url);
+          return reviewParse(url);
         })
       );
     })
     .then(function(reviews) {
         let merged = [].concat.apply([], reviews);
-        // console.log(merged)
         console.log('There are ' + numberOfReviewsFound + ' reviews and ' + merged.length + ' have been scraped')
 
         var jsonContent = JSON.stringify(merged);
-        // console.log(jsonContent);
-
-        // var jsonObj = JSON.parse(jsonContent);
-        // console.log(jsonObj);
         
         fs.writeFile("out/output.json", jsonContent, 'utf8', function (err) {
             if (err) {
