@@ -3,8 +3,13 @@ const $ = require('cheerio');
 const fs = require('fs');
 const reviewParse = require('./reviewScraper');
 
-const url = 'https://www.tripadvisor.com.sg/Attraction_Review-g293891-d16813813-Reviews-Ankit_Treks-Pokhara_Gandaki_Zone_Western_Region.html';
+process.argv.shift()
+process.argv.shift()
+
+const url = process.argv.join(" ")
+// const url = 'https://www.tripadvisor.com.sg/Attraction_Review-g293891-d16813813-Reviews-Ankit_Treks-Pokhara_Gandaki_Zone_Western_Region.html';
 // const url = 'https://www.tripadvisor.com.sg/Restaurant_Review-g293891-d8508841-Reviews-Rosemary_Kitchen-Pokhara_Gandaki_Zone_Western_Region.html'
+console.log('Finding reviews from: ' + url + '\n')
 let numberOfReviewsFound = 0;
 
 rp(url)
