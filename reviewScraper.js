@@ -6,7 +6,7 @@ const reviewParse = function(url) {
     .then(function(html){
       const reviewContainer = $('div.reviewSelector', html);
       const reviewsDiv = [];
-      console.log('Collecting: ' + reviewContainer.length + ' reviews')
+      console.log('Processing and collecting: ' + reviewContainer.length + ' reviews')
 
       for (let i = 0; i < reviewContainer.length; i++) {
           const reviewTitle = $('span.noQuotes', reviewContainer[i])[0].children[0].data
@@ -14,15 +14,17 @@ const reviewParse = function(url) {
           const reviewUserName = $('div.info_text > div', reviewContainer[i])[0].children[0].data
           const reviewDate = $('span.ratingDate', reviewContainer[i])[0].children[0].parent.attribs.title
           const reviewUserAvatar = $('div.ui_avatar.resp > img.basicImg', reviewContainer[i])[0].attribs.src
+          const reviewRating = $('span.ui_bubble_rating', reviewContainer[i])[0].attribs.class
 
-          // console.log($('div.ui_avatar.resp > img.basicImg', reviewContainer[i])[0].attribs.src)
+          const outOfFiveRating = (reviewRating.match(/\d+/)[0]) / 10
 
           reviewsDiv.push({
               'reviewTitle': reviewTitle,
               'reviewText': reviewText,
               'reviewUserName': reviewUserName,
               'reviewDate': reviewDate,
-              'reviewUserAvatar': reviewUserAvatar
+              'reviewUserAvatar': reviewUserAvatar,
+              'outOfFiveRating': outOfFiveRating
           });
       }
       return reviewsDiv;
@@ -30,6 +32,6 @@ const reviewParse = function(url) {
     .catch(function(err){
       console.error(err);
   });
-  };
+};
   
 module.exports = reviewParse;
