@@ -13,11 +13,10 @@ let numberOfReviewsFound = 0;
 
 rp(url)
   .then(function(html){
-    const reviewPages = $('a.pageNum', html);
     const reviewCount = $('div.pagination-details > b:last-child', html);
     const reviewPageUrls = [];
 
-    numberOfReviewsFound = reviewCount[0].children[0].data.match(/\d+/)[0]
+    numberOfReviewsFound = reviewCount[0].children[0].data.replace(',', '').match(/\d+/)[0]
     const numberOfReviewPages = Math.ceil(numberOfReviewsFound/10)
 
     reviewPageUrls.push(url);
