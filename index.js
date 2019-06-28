@@ -27,7 +27,7 @@ rp(url)
         reviewPageUrls.push(reviewUrl);
     }
 
-    console.log('Found ' + reviewPageUrls.length + ' review pages with ' + numberOfReviewsFound + ' reviews');
+    console.log('Found ' + reviewPageUrls.length + ' review pages with ' + numberOfReviewsFound + ' reviews...\n');
 
     return Promise.all(
         reviewPageUrls.map(function(url) {
@@ -37,11 +37,10 @@ rp(url)
     })
     .then(function(reviews) {
         let merged = [].concat.apply([], reviews);
-        if (numberOfReviewsFound !== merged.length) {
+        console.log('There are ' + numberOfReviewsFound + ' reviews on the page and ' + merged.length + ' have been scraped');
+        if (numberOfReviewsFound != merged.length) {
           return console.log('Error: There is a mismatch between the number of reviews on the page and the number scraped');
         } else {
-          console.log('There are ' + numberOfReviewsFound + ' reviews on the page and ' + merged.length + ' have been scraped');
-
           var jsonContent = JSON.stringify(merged);
           
           fs.writeFile("out/output.json", jsonContent, 'utf8', function (err) {
