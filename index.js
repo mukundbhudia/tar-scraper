@@ -37,18 +37,21 @@ rp(url)
     })
     .then(function(reviews) {
         let merged = [].concat.apply([], reviews);
-        console.log('There are ' + numberOfReviewsFound + ' reviews and ' + merged.length + ' have been scraped')
+        if (numberOfReviewsFound !== merged.length) {
+          return console.log('Error: There is a mismatch between the number of reviews on the page and the number scraped');
+        } else {
+          console.log('There are ' + numberOfReviewsFound + ' reviews on the page and ' + merged.length + ' have been scraped');
 
-        var jsonContent = JSON.stringify(merged);
-        
-        fs.writeFile("out/output.json", jsonContent, 'utf8', function (err) {
-            if (err) {
-                console.log("An error occurred while writing JSON Object to File.");
-                return console.log(err);
-            }
-        
-            console.log("JSON file has been saved.");
-        });
+          var jsonContent = JSON.stringify(merged);
+          
+          fs.writeFile("out/output.json", jsonContent, 'utf8', function (err) {
+              if (err) {
+                  console.log("An error occurred while writing JSON Object to File.");
+                  return console.log(err);
+              }          
+              console.log("JSON file has been saved.");
+          });
+        }
     })
   .catch(function(err){
     console.error(err);
