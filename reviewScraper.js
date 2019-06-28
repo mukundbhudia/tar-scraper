@@ -4,7 +4,7 @@ const $ = require('cheerio');
 const reviewParse = function(url) {
     return rp(url)
     .then(function(html){
-      const reviewContainer = $('div.reviewSelector', html);
+      const reviewContainer = $('div.review-container', html);
       const reviewsDiv = [];
       console.log('Processing and collecting: ' + reviewContainer.length + ' reviews')
 
@@ -15,10 +15,12 @@ const reviewParse = function(url) {
           const reviewDate = $('span.ratingDate', reviewContainer[i])[0].children[0].parent.attribs.title
           const reviewUserAvatar = $('div.ui_avatar.resp > img.basicImg', reviewContainer[i])[0].attribs.src
           const reviewRating = $('span.ui_bubble_rating', reviewContainer[i])[0].attribs.class
+          const reviewId = $('div.reviewSelector', reviewContainer[i])[0].attribs['data-reviewid']
 
           const outOfFiveRating = (reviewRating.match(/\d+/)[0]) / 10
 
           reviewsDiv.push({
+              'reviewId': reviewId,
               'reviewTitle': reviewTitle,
               'reviewText': reviewText,
               'reviewUserName': reviewUserName,
